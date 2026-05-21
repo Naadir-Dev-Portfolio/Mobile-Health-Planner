@@ -1,0 +1,2302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Workout Timer Template</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    :root{
+      --bg:#0b0b0c;
+      --bg2:#121315;
+      --panel:#17191c;
+      --panel2:#1d2024;
+      --line:rgba(255,255,255,.10);
+      --line-strong:rgba(255,255,255,.16);
+      --text:rgba(255,255,255,.94);
+      --muted:rgba(255,255,255,.66);
+      --muted2:rgba(255,255,255,.42);
+      --silver:rgba(232,236,240,.92);
+      --silver-soft:rgba(255,255,255,.12);
+      --shine:linear-gradient(120deg, rgba(255,255,255,0) 20%, rgba(255,255,255,.08) 38%, rgba(255,255,255,.28) 50%, rgba(255,255,255,.08) 62%, rgba(255,255,255,0) 80%);
+      --shadow:0 20px 50px rgba(0,0,0,.42);
+      --r:13px;
+      --r-lg:16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    html{
+      background:
+        radial-gradient(900px 520px at 14% 8%, rgba(255,255,255,.07), transparent 55%),
+        radial-gradient(800px 480px at 82% 0%, rgba(255,255,255,.05), transparent 56%),
+        linear-gradient(180deg, #060606, #0b0b0c 30%, #121315 100%);
+      overflow-y: scroll;
+      scrollbar-gutter: stable;
+      scrollbar-color: rgba(255,255,255,.20) rgba(255,255,255,.05);
+      scrollbar-width: thin;
+      color-scheme: dark;
+    }
+    html::-webkit-scrollbar{
+      width:12px;
+      background: rgba(11,11,12,.98);
+    }
+    html::-webkit-scrollbar-track{
+      background: linear-gradient(180deg, rgba(18,19,21,.98), rgba(11,11,12,.98));
+    }
+    html::-webkit-scrollbar-thumb{
+      background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.12));
+      border-radius:999px;
+      border:2px solid rgba(11,11,12,.98);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    html::-webkit-scrollbar-thumb:hover{
+      background: linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,.18));
+    }
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 14% 8%, rgba(255,255,255,.07), transparent 55%),
+        radial-gradient(800px 480px at 82% 0%, rgba(255,255,255,.05), transparent 56%),
+        linear-gradient(180deg, #060606, #0b0b0c 30%, #121315 100%);
+      overflow-x:hidden;
+    }
+    .wrap{
+      max-width: 1400px;
+      margin:0 auto;
+      padding: 14px;
+      display:grid;
+      gap:12px;
+      grid-template-columns: 1.15fr .85fr;
+    }
+    @media (max-width: 980px){
+      .wrap{grid-template-columns:1fr; padding-bottom:86px;}
+    }
+    .card{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(28,30,34,.78), rgba(18,19,21,.86));
+      border-radius: var(--r-lg);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    .pad{padding:14px}
+
+    .topbar{
+      grid-column:1/-1;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      padding: 12px;
+      border:1px solid var(--line);
+      background: rgba(20,21,24,.82);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow);
+      position:sticky;
+      top:0;
+      z-index: 30;
+      backdrop-filter: blur(10px);
+    }
+    .leftTop{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      min-width: 260px;
+    }
+    .pill{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255,255,255,.82);
+      white-space:nowrap;
+    }
+    .pill b{color:#fff}
+
+    .btnRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end}
+    @media (max-width: 700px){
+      .btnRow{
+        width:100%;
+        justify-content:center;
+      }
+    }
+    button, .linkBtn{
+      -webkit-tap-highlight-color: transparent;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.035));
+      color: rgba(255,255,255,.92);
+      padding: 10px 13px;
+      border-radius: 11px;
+      font-weight: 900;
+      letter-spacing:.12px;
+      transition: transform .12s ease, background .25s ease, opacity .2s ease, border-color .25s ease, box-shadow .25s ease;
+      user-select:none;
+      position:relative;
+      overflow:hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+    button::before, .linkBtn::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background: var(--shine);
+      transform: translateX(-145%);
+      transition: transform .6s ease;
+      pointer-events:none;
+      opacity:.9;
+    }
+    button:hover, .linkBtn:hover{background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.045)); border-color: rgba(255,255,255,.24); box-shadow: 0 14px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08)}
+    button:hover::before, .linkBtn:hover::before{transform: translateX(145%)}
+    button:active, .linkBtn:active{transform: translateY(1px)}
+    button.primary, .linkBtn.primary{
+      border-color: rgba(255,255,255,.28);
+      background: linear-gradient(180deg, rgba(245,248,250,.22), rgba(179,184,190,.08));
+      color:#fff;
+      box-shadow: 0 18px 34px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.22);
+    }
+    button.primary:hover, .linkBtn.primary:hover{
+      border-color: rgba(255,255,255,.42);
+      background: linear-gradient(180deg, rgba(255,255,255,.30), rgba(194,200,206,.10));
+      box-shadow: 0 22px 42px rgba(0,0,0,.48), inset 0 1px 0 rgba(255,255,255,.26);
+    }
+    #startBtn, #mStart{
+      padding: 13px 20px;
+      font-size: 15px;
+      min-width: 132px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    #pauseBtn, #stopBtn, #resetBtn{
+      padding: 10px 16px;
+      font-size: 14px;
+      min-width: 112px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    button.ghost, .linkBtn.ghost{border-color: rgba(255,255,255,.10); background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(0,0,0,.16))}
+    button:disabled{opacity:.45; cursor:not-allowed}
+    .kbd{display:none !important}
+    @media (max-width: 540px){ .kbd{display:none !important} }
+    .kbd code{
+      font-family: var(--mono);
+      padding: 3px 6px;
+      border-radius: 10px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.78);
+    }
+    .keysHelp{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-left:4px;
+    }
+    .keysBtn{
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      padding:0;
+      font-family:var(--mono);
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .keysTooltip{
+      position:absolute;
+      top:calc(100% + 10px);
+      right:0;
+      min-width:260px;
+      max-width:320px;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(10,11,13,.97);
+      box-shadow:0 18px 44px rgba(0,0,0,.45);
+      opacity:0;
+      pointer-events:none;
+      transform:translateY(6px);
+      transition:opacity .16s ease, transform .16s ease;
+      z-index:40;
+    }
+    .keysTooltip::before{
+      content:"";
+      position:absolute;
+      top:-6px;
+      right:16px;
+      width:10px;
+      height:10px;
+      transform:rotate(45deg);
+      background:rgba(10,11,13,.97);
+      border-left:1px solid rgba(255,255,255,.14);
+      border-top:1px solid rgba(255,255,255,.14);
+    }
+    .keysHelp:hover .keysTooltip,
+    .keysHelp:focus-within .keysTooltip{
+      opacity:1;
+      transform:translateY(0);
+    }
+    .keysList{
+      display:grid;
+      gap:8px;
+      font-family:var(--mono);
+      font-size:12px;
+      color:rgba(255,255,255,.78);
+    }
+    .keysRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .keysRow span:last-child{
+      color:rgba(255,255,255,.58);
+      text-align:right;
+    }
+    @media (max-width: 700px){
+      .topbar{
+        justify-content:center;
+      }
+      .leftTop{
+        width:100%;
+        justify-content:center;
+      }
+      .btnRow{
+        display:grid;
+        grid-template-columns:repeat(2, minmax(132px, 1fr));
+        justify-content:center;
+        width:min(100%, 360px);
+      }
+      #startBtn, #pauseBtn, #stopBtn, #resetBtn{
+        width:100%;
+      }
+      #minus10Btn, #plus10Btn{
+        width:100%;
+      }
+      .keysHelp{
+        grid-column:1 / -1;
+        justify-self:center;
+        margin-left:0;
+      }
+    }
+    @media (max-width: 420px){
+      .btnRow{
+        width:100%;
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
+    .audioCtl{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 10px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255,255,255,.78);
+      white-space:nowrap;
+    }
+    .audioCtl input[type="range"]{
+      width: 140px;
+      -webkit-appearance:none;
+      appearance:none;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      outline:none;
+      overflow:hidden;
+    }
+    .audioCtl input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(0,0,0,.20);
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+      cursor:pointer;
+    }
+    .audioCtl .miniBtn{
+      padding:6px 10px;
+      border-radius: 999px;
+      font-weight: 950;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .hero{
+      min-height: 420px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .panel{
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.12));
+      border-radius: var(--r);
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      position:relative;
+    }
+    .phaseLine{
+      display:block;
+      min-height: 88px;
+      padding-right: 148px;
+    }
+    .phaseBig{
+      margin:0;
+      font-size: clamp(22px, 3.0vw, 38px);
+      font-weight: 950;
+      letter-spacing: -0.02em;
+      line-height:1.05;
+      min-height: calc(2 * 1.05em);
+      max-width: min(100%, 760px);
+      display:flex;
+      align-items:flex-start;
+    }
+    .window{
+      font-family: var(--mono);
+      font-weight: 900;
+      color: rgba(255,255,255,.78);
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      white-space:nowrap;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      position:absolute;
+      top:14px;
+      right:14px;
+    }
+    .dot{
+      width:8px; height:8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.55);
+      box-shadow: 0 0 0 5px rgba(255,255,255,.06);
+    }
+    .dot.go{background:#4dffb5; box-shadow:0 0 0 5px rgba(77,255,181,.10)}
+    .dot.pause{background:#ffd36a; box-shadow:0 0 0 5px rgba(255,211,106,.10)}
+    .dot.stop{background:#ff6b86; box-shadow:0 0 0 5px rgba(255,107,134,.10)}
+
+    .twoTimers{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 740px){ .twoTimers{grid-template-columns:1fr} }
+    @media (max-width: 740px){
+      .phaseLine{
+        min-height: unset;
+        padding-right:0;
+        padding-top:52px;
+      }
+      .window{
+        top:14px;
+        left:14px;
+        right:auto;
+      }
+      .phaseBig{
+        max-width:100%;
+      }
+    }
+    .timerBox{
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      border-radius: var(--r);
+      padding: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-width: 0;
+      position:relative;
+      overflow:hidden;
+    }
+    .timerBox:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(520px 120px at 20% 0%, rgba(255,255,255,.10), transparent 55%),
+                  radial-gradient(420px 120px at 80% 10%, rgba(255,255,255,.05), transparent 60%);
+      opacity:.7;
+      pointer-events:none;
+    }
+    .timerBox > *{position:relative; z-index:1}
+    .k{
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.58);
+    }
+    .timeBig{
+      font-family: var(--mono);
+      font-weight: 950;
+      font-size: clamp(34px, 4.8vw, 58px);
+      letter-spacing: -0.03em;
+      line-height:1;
+    }
+    .metaRow{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .bar{
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      position:relative;
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(255,255,255,.92), rgba(198,202,208,.86), rgba(133,138,145,.92));
+      border-radius: 999px;
+      transition: width .12s linear;
+    }
+
+    .panelNotesWrap{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.14);
+      border-radius: var(--r);
+      padding: 12px;
+    }
+
+    .details{
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.12));
+      border-radius: var(--r);
+      padding: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .label{
+      font-size: 11px;
+      letter-spacing:.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.62);
+      margin-bottom:6px;
+    }
+
+    .nextBig{
+      font-size: clamp(17px, 1.75vw, 21px);
+      font-weight: 950;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      white-space:pre-wrap;
+      color: rgba(255,255,255,.90);
+    }
+    .nextMeta{
+      margin-top:8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .muted{color:var(--muted)}
+    .mono{font-family:var(--mono)}
+
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .item{
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.12));
+      border-radius: 12px;
+      padding: 12px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      cursor:pointer;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .item:hover{background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.24); box-shadow: 0 12px 28px rgba(0,0,0,.30)}
+    .item:active{transform: translateY(1px)}
+    .item.active{
+      border-color: rgba(255,255,255,.24);
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.04));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+    .tcol{
+      font-family: var(--mono);
+      font-weight: 900;
+      font-size: 12px;
+      color: rgba(255,255,255,.78);
+      min-width: 104px;
+    }
+    .mcol{min-width:0}
+    .mcol .name{font-weight: 950; font-size: 14px; margin-bottom:4px; white-space:pre-wrap}
+    .mcol .desc{display:none; color: rgba(255,255,255,.70); font-size: 12px; line-height:1.25; white-space:pre-wrap}
+    .jump{margin-left:auto; color: rgba(255,255,255,.55); font-size: 12px; white-space:nowrap}
+    .timelineActions{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex:0 0 auto;
+    }
+    .miniAction{
+      -webkit-tap-highlight-color: transparent;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      color: rgba(255,255,255,.84);
+      width:34px;
+      height:34px;
+      border-radius:10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      transition: background .2s ease, border-color .2s ease, transform .12s ease, box-shadow .2s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .miniAction:hover{
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.05));
+      border-color: rgba(255,255,255,.24);
+      box-shadow: 0 10px 24px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .miniAction:active{transform:translateY(1px)}
+    .miniAction i{font-size:14px}
+
+    .scrub{
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.12));
+      border-radius: var(--r);
+      padding: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .scrubTop{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    input[type="range"].scrubber{
+      width:100%;
+      -webkit-appearance:none;
+      appearance:none;
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      outline:none;
+      overflow:hidden;
+    }
+    input[type="range"].scrubber::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(0,0,0,.20);
+      box-shadow: 0 12px 28px rgba(0,0,0,.35);
+      cursor:pointer;
+    }
+
+    .sideColumn{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      min-height:0;
+      align-self:stretch;
+    }
+    .timelineCard{
+      flex:1 1 auto;
+      min-height:0;
+      height:100%;
+      overflow:hidden;
+    }
+    .timelineShell{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:0;
+      height:100%;
+      overflow:hidden;
+    }
+    .timelineShell > .label,
+    .timelineShell > .titleRow{
+      flex:0 0 auto;
+    }
+    @media (max-width: 980px){
+      .timelineShell{
+        height: min(46vh, 440px);
+        min-height: 280px;
+        max-height:min(46vh, 440px);
+      }
+    }
+    .timelineScroller{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.14);
+      border-radius: var(--r);
+      padding: 10px;
+      overflow:auto;
+      overscroll-behavior: contain;
+      flex: 1 1 auto;
+      min-height:0;
+      max-height:100%;
+      scroll-behavior: smooth;
+    }
+    .timelineScroller::-webkit-scrollbar{width:10px}
+    .timelineScroller::-webkit-scrollbar-thumb{
+      background: rgba(255,255,255,.14);
+      border-radius: 999px;
+      border: 2px solid rgba(0,0,0,.22);
+    }
+    .timelineScroller::-webkit-scrollbar-track{background: rgba(0,0,0,.12)}
+
+    .dock{
+      position: fixed;
+      left: 12px; right: 12px;
+      bottom: 12px;
+      padding: 10px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(16,17,19,.88);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      display:none;
+      gap:10px;
+      z-index: 50;
+    }
+    @media (max-width: 980px){ .dock{display:flex} }
+    .dock button{flex:1}
+
+    .toast{
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(16,17,19,.84);
+      backdrop-filter: blur(10px);
+      color: rgba(255,255,255,.88);
+      font-weight: 900;
+      letter-spacing:.1px;
+      display:none;
+      z-index: 60;
+      max-width: min(860px, calc(100vw - 24px));
+      font-size: 13px;
+    }
+    .toast.show{display:block; animation: pop .18s ease}
+    @keyframes pop{
+      from{opacity:0; transform: translateX(-50%) translateY(-6px) scale(.99)}
+      to{opacity:1; transform: translateX(-50%) translateY(0) scale(1)}
+    }
+
+    .pill, .audioCtl, .window, .kbd code{box-shadow: inset 0 1px 0 rgba(255,255,255,.04)}
+    .phaseBig, .timeBig, .nextBig, .mcol .name{ text-shadow: 0 1px 0 rgba(255,255,255,.05); }
+    .k::before, .label::before{
+      font-family:"Font Awesome 6 Free";
+      font-weight:900;
+      margin-right:8px;
+      color:rgba(255,255,255,.52);
+    }
+    .details .label::before{content:"\f061";}
+    .timelineCard .label::before{content:"\f03a";}
+    .pill::before{content:"\f5fc"; font-family:"Font Awesome 6 Free"; font-weight:900; color:rgba(255,255,255,.65)}
+    .item::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: var(--shine);
+      transform: translateX(-170%);
+      transition: transform .7s ease;
+      pointer-events:none;
+      opacity:.6;
+    }
+    .item:hover::after{transform: translateX(170%)}
+    .topbar, .scrub, .details, .panel, .panelNotesWrap, .timelineScroller, .timerBox{backdrop-filter: blur(14px)}
+
+    button i, .linkBtn i{opacity:.88; margin-right:0}
+
+    .infoWrap{position:relative; display:inline-flex; align-items:center; margin-left:8px;}
+    .infoBtn{
+      width:20px; height:20px; border-radius:50%; border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.04); color:rgba(255,255,255,.72); display:inline-flex; align-items:center; justify-content:center;
+      font-size:11px; font-weight:900; cursor:help; box-shadow:none; padding:0;
+      flex:0 0 auto;
+    }
+    .infoBtn::before{display:none}
+    .tooltip{
+      position:absolute; left:50%; top:calc(100% + 10px); transform:translateX(-50%) translateY(6px);
+      min-width:220px; max-width:320px; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.14);
+      background:rgba(10,11,13,.97); color:rgba(255,255,255,.82); font-size:12px; line-height:1.45; pointer-events:none;
+      opacity:0; transition:opacity .16s ease, transform .16s ease; box-shadow:0 18px 44px rgba(0,0,0,.45); z-index:12;
+      white-space:normal;
+    }
+    .tooltip::before{
+      content:""; position:absolute; left:50%; top:-6px; width:10px; height:10px; transform:translateX(-50%) rotate(45deg);
+      background:rgba(10,11,13,.97); border-left:1px solid rgba(255,255,255,.14); border-top:1px solid rgba(255,255,255,.14);
+    }
+    .infoWrap:hover .tooltip, .infoWrap:focus-within .tooltip{opacity:1; transform:translateX(-50%) translateY(0)}
+    .cleanMeta{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+    .subtleNote{font-size:12px; color:rgba(255,255,255,.62);}
+    .compactRow{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+    .currentGuidanceText{
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.58);
+      line-height:1.5;
+      white-space:normal;
+    }
+    .timelineTitle{display:flex; align-items:center; gap:8px; margin-bottom:2px;}
+    .timelineTitle .name{font-weight:950; font-size:14px; white-space:pre-wrap;}
+    .timelineTitle .infoWrap{margin-left:0}
+    .hintRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:2;
+    }
+    .hintAction{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .previewCard{padding:0; overflow:hidden;}
+    .previewCardInline{
+      grid-column:1 / -1;
+    }
+    .previewHead{
+      padding:12px 14px 0 14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .previewHeadActions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .resultNav{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .resultNav[hidden]{
+      display:none !important;
+    }
+    .resultCount{
+      min-width:92px;
+      text-align:center;
+      font-family:var(--mono);
+      font-size:12px;
+      color:rgba(255,255,255,.72);
+    }
+    .previewBody{
+      padding:12px 14px 14px;
+      display:grid;
+      gap:12px;
+      grid-template-columns:minmax(0, 1.05fr) minmax(0, .95fr);
+      align-items:start;
+    }
+    @media (max-width: 1100px){
+      .previewBody{grid-template-columns:1fr;}
+    }
+    .previewPanel{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:12px;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.22));
+      overflow:hidden;
+      min-height:100%;
+      min-width:0;
+    }
+    .previewStage{
+      height:360px;
+      min-height:360px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.28));
+      overflow:hidden;
+    }
+    .previewStage.empty{
+      color:rgba(255,255,255,.54);
+      text-align:center;
+      padding:24px;
+      font-size:14px;
+      line-height:1.5;
+      height:360px;
+    }
+    .previewStage img{
+      display:block;
+      width:100%;
+      height:100%;
+      max-height:none;
+      object-fit:contain;
+      background:#050505;
+    }
+    @media (max-width: 1100px){
+      .previewStage,
+      .previewStage.empty{
+        height:320px;
+        min-height:320px;
+      }
+    }
+    .thumbStrip{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(74px, 1fr));
+      gap:8px;
+      padding:12px;
+      border-top:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.02);
+    }
+    .thumb{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:10px;
+      background:rgba(255,255,255,.03);
+      overflow:hidden;
+      padding:0;
+      min-height:74px;
+    }
+    .thumb img{
+      width:100%;
+      height:74px;
+      object-fit:contain;
+      display:block;
+      background:#0a0a0b;
+    }
+    .thumb.active{
+      border-color:rgba(255,255,255,.30);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+    .previewActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .previewDetails{
+      display:grid;
+      gap:12px;
+      align-content:start;
+      min-width:0;
+    }
+    .previewMetaGrid{
+      display:grid;
+      gap:10px;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+    }
+    @media (max-width: 640px){
+      .previewMetaGrid{grid-template-columns:1fr}
+    }
+    .metaTile{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:12px;
+      background:rgba(255,255,255,.03);
+      padding:10px 12px;
+      min-width:0;
+    }
+    .metaTile .metaK{
+      font-size:11px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.56);
+      margin-bottom:6px;
+    }
+    .metaTile .metaV{
+      font-size:14px;
+      line-height:1.45;
+      color:rgba(255,255,255,.90);
+      min-width:0;
+      overflow-wrap:anywhere;
+    }
+    .chips{display:flex; flex-wrap:wrap; gap:8px;}
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      padding:7px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:rgba(255,255,255,.86);
+      font-size:12px;
+      font-weight:800;
+    }
+    .statusLine{
+      display:none;
+    }
+    .instructionsList{margin:0; padding-left:18px; color:rgba(255,255,255,.86); min-width:0;}
+    .instructionsList li + li{margin-top:6px;}
+    .instructionsList li{overflow-wrap:anywhere;}
+  </style>
+</head>
+
+<body>
+  <div class="toast" id="toast"></div>
+
+  <div class="wrap">
+
+    <div class="topbar">
+      <div class="leftTop">
+        <div class="pill"><b id="pillId">WF-XXXX-00</b> • <span id="pillName">Workout Name</span></div>
+
+        <div class="audioCtl" title="Beep volume">
+          <span>Beep</span>
+          <input id="vol" type="range" min="0" max="100" value="60" />
+          <button id="testBeep" class="miniBtn ghost" type="button"><i class="fa-solid fa-wave-square"></i> Test</button>
+        </div>
+        <div class="keysHelp">
+          <button class="ghost keysBtn" type="button" aria-label="Keyboard shortcuts">Keys</button>
+          <div class="keysTooltip">
+            <div class="keysList">
+              <div class="keysRow"><code>Space</code><span>Start / pause</span></div>
+              <div class="keysRow"><code>S</code><span>Stop</span></div>
+              <div class="keysRow"><code>R</code><span>Reset</span></div>
+              <div class="keysRow"><code>&larr; / &rarr;</code><span>Minus / plus 10s</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btnRow">
+        <button class="primary" id="startBtn"><i class="fa-solid fa-play"></i> Start</button>
+        <button id="pauseBtn" disabled><i class="fa-solid fa-pause"></i> Pause</button>
+        <button id="stopBtn" disabled><i class="fa-solid fa-stop"></i> Stop</button>
+        <button id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+        <button class="ghost" id="minus10Btn" title="-10s"><i class="fa-solid fa-backward-step"></i> -10s</button>
+        <button class="ghost" id="plus10Btn" title="+10s">+10s <i class="fa-solid fa-forward-step"></i></button>
+        <span class="kbd">Keys: <code>Space</code> start/pause • <code>S</code> stop • <code>R</code> reset • <code>←/→</code> ±10s</span>
+      </div>
+    </div>
+
+    <section class="card hero">
+      <div class="pad" style="display:flex; flex-direction:column; gap:12px;">
+
+        <div class="panel">
+          <div class="phaseLine">
+            <h1 class="phaseBig" id="phaseBig">Exercise</h1>
+            <div class="window" id="windowPill"><span class="dot stop" id="stateDot"></span><span id="windowTxt">00:00–00:00</span></div>
+          </div>
+
+          <div class="twoTimers">
+            <div class="timerBox">
+              <div class="k">Master timer (remaining)</div>
+              <div class="timeBig" id="masterTime">00:00</div>
+              <div class="metaRow">
+                <span class="muted">Total:</span> <span id="totalLen" class="mono">00:00</span>
+              </div>
+            </div>
+
+            <div class="timerBox">
+              <div class="k">Section timer (remaining)</div>
+              <div class="timeBig" id="sectionTime">00:00</div>
+              <div class="metaRow">
+                <span><span class="muted">Len:</span> <span id="sectionLen" class="mono">00:00</span></span>
+                <span><span class="muted">Elap:</span> <span id="sectionElap" class="mono">00:00</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bar" aria-label="Workout progress"><i id="barFill"></i></div>
+
+          <div class="panelNotesWrap">
+            <div class="cleanMeta">
+              <div class="compactRow">
+                <div class="currentGuidanceText" id="currentGuidanceText">No extra guidance for this section.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scrub">
+          <div class="scrubTop">
+            <div class="hintAction">
+              <span>Jump time:</span>
+              <div class="infoWrap">
+                <button class="infoBtn" type="button" aria-label="Jump time help">i</button>
+                <div class="tooltip">Drag the bar to jump. This works while paused or running.</div>
+              </div>
+            </div>
+            <span class="mono"><span id="scrubAt">00:00</span> / <span id="scrubTotal">00:00</span></span>
+          </div>
+          <input id="scrubber" class="scrubber" type="range" min="0" max="0" step="1" value="0" />
+        </div>
+
+        <div class="details">
+          <div>
+            <div class="label">Next</div>
+            <div class="nextBig" id="nextBig">—</div>
+            <div class="nextMeta">starts in <span id="nextIn" class="mono">00:00</span></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="sideColumn">
+      <section class="card timelineCard">
+        <div class="pad timelineShell">
+          <div class="hintRow">
+            <div class="label" style="margin-bottom:0;">Timeline</div>
+            <div class="hintAction">
+              <div class="infoWrap">
+                <button class="infoBtn" type="button" aria-label="Timeline help">i</button>
+                <div class="tooltip">Auto-scroll keeps the current section pinned at the top while running. Tap any block to jump.</div>
+              </div>
+            </div>
+          </div>
+          <div class="timelineScroller" id="timelineScroller">
+            <div class="list" id="list"></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <section class="card details previewCard previewCardInline" id="previewCard">
+      <div class="previewHead">
+        <div>
+          <div class="label" style="margin-bottom:8px;">Move preview</div>
+          <div class="subtleNote" id="previewStatus">Dataset preview not loaded yet.</div>
+        </div>
+        <div class="previewHeadActions">
+          <div class="resultNav" id="resultNav" hidden>
+            <button class="miniAction" type="button" id="prevMatchBtn" aria-label="Previous dataset match" title="Previous match">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="resultCount" id="resultCount">1 / 1</div>
+            <button class="miniAction" type="button" id="nextMatchBtn" aria-label="Next dataset match" title="Next match">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="previewBody">
+        <div class="previewPanel">
+          <div class="previewStage empty" id="previewStage">No dataset image preview for this move yet.</div>
+          <div class="thumbStrip" id="thumbStrip" hidden></div>
+        </div>
+
+        <div class="previewDetails">
+          <div class="previewMetaGrid">
+            <div class="metaTile">
+              <div class="metaK">Dataset match</div>
+              <div class="metaV" id="datasetMatchName">—</div>
+            </div>
+            <div class="metaTile">
+              <div class="metaK">Category</div>
+              <div class="metaV" id="datasetCategory">—</div>
+            </div>
+            <div class="metaTile">
+              <div class="metaK">Equipment</div>
+              <div class="metaV" id="datasetEquipment">—</div>
+            </div>
+            <div class="metaTile">
+              <div class="metaK">Instructions</div>
+              <div class="metaV" id="datasetInstructions">—</div>
+            </div>
+          </div>
+
+          <div class="previewMetaGrid">
+            <div class="metaTile">
+              <div class="metaK">Primary muscles</div>
+              <div class="metaV"><div class="chips" id="datasetPrimary"></div></div>
+            </div>
+            <div class="metaTile">
+              <div class="metaK">Secondary muscles</div>
+              <div class="metaV"><div class="chips" id="datasetSecondary"></div></div>
+            </div>
+          </div>
+
+          <div class="statusLine" id="datasetSourceStatus">Dataset source idle.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="dock">
+    <button class="primary" id="mStart"><i class="fa-solid fa-play"></i> Start</button>
+    <button id="mPause" disabled><i class="fa-solid fa-pause"></i> Pause</button>
+    <button id="mStop" disabled><i class="fa-solid fa-stop"></i> Stop</button>
+  </div>
+
+  <script>
+    /***********************************************************************
+     * USER CONFIGURATION SECTION
+     ***********************************************************************/
+    const WORKOUT_ID   = "WF-CARD-I30";
+    const WORKOUT_NAME = "Replacement for WF-BIKE-B30 (Intervals)";
+
+    const EXERCISES = [
+      {
+        "title": "Warm-up: mobility + easy climbers + jumping jacks",
+        "duration": "00:06:00",
+        "notes": "Build heat gradually."
+      },
+      {
+        "title": "Moderate: fast shadow boxing",
+        "duration": "00:01:00",
+        "notes": "Sharp pace; still controlled."
+      },
+      {
+        "title": "Hard: mountain climbers (fast)",
+        "duration": "00:00:30",
+        "notes": "Push pace; stay clean."
+      },
+      {
+        "title": "Moderate: step-ups",
+        "duration": "00:01:00",
+        "notes": "Quick feet; steady breathing."
+      },
+      {
+        "title": "Hard: jumping jacks",
+        "duration": "00:00:30",
+        "notes": "Crisp tempo."
+      },
+      {
+        "title": "Moderate: squat-to-reach",
+        "duration": "00:01:00",
+        "notes": "Keep rhythm smooth."
+      },
+      {
+        "title": "Hard: skater hops",
+        "duration": "00:00:30",
+        "notes": "Explosive but controlled."
+      },
+      {
+        "title": "Moderate: fast shadow boxing",
+        "duration": "00:01:00",
+        "notes": "Stay light on feet."
+      },
+      {
+        "title": "Hard: mountain climbers (fast)",
+        "duration": "00:00:30",
+        "notes": "Keep hips low."
+      },
+      {
+        "title": "Moderate: step-ups",
+        "duration": "00:01:00",
+        "notes": "Consistent turnover."
+      },
+      {
+        "title": "Hard: jumping jacks",
+        "duration": "00:00:30",
+        "notes": "Fast hands and feet."
+      },
+      {
+        "title": "Moderate: squat-to-reach",
+        "duration": "00:01:00",
+        "notes": "Stay tall at the top."
+      },
+      {
+        "title": "Hard: skater hops",
+        "duration": "00:00:30",
+        "notes": "Controlled landing."
+      },
+      {
+        "title": "Moderate: fast shadow boxing",
+        "duration": "00:01:00",
+        "notes": "Final moderate push."
+      },
+      {
+        "title": "Hard: burpees (optional)",
+        "duration": "00:00:30",
+        "notes": "Only if movement quality stays high."
+      },
+      {
+        "title": "Extra easy movement buffer",
+        "duration": "00:06:00",
+        "notes": "Source timing leaves 6 minutes unassigned; use light walking or very easy movement before cooldown."
+      },
+      {
+        "title": "Cooldown walk + breathing",
+        "duration": "00:06:00",
+        "notes": "Slow steps; deep breaths."
+      }
+    ];
+
+    /***********************************************************************
+     * END USER CONFIGURATION SECTION
+     ***********************************************************************/
+
+    const DATA_URL = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/dist/exercises.json";
+    const IMAGE_BASE = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
+    const DATASET_CACHE_KEY = "WORKOUT_TEMPLATE_exercise_db_cache_v1";
+    const DATASET_CACHE_TIME_KEY = "WORKOUT_TEMPLATE_exercise_db_cache_time_v1";
+    const DATASET_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 30;
+
+    const $ = (id) => document.getElementById(id);
+
+    const pillId = $("pillId");
+    const pillName = $("pillName");
+    const masterTime = $("masterTime");
+    const totalLen = $("totalLen");
+    const phaseBig = $("phaseBig");
+    const windowTxt = $("windowTxt");
+    const stateDot = $("stateDot");
+    const sectionTime = $("sectionTime");
+    const sectionLen = $("sectionLen");
+    const sectionElap = $("sectionElap");
+    const barFill = $("barFill");
+    const currentGuidanceText = $("currentGuidanceText");
+    const nextBig = $("nextBig");
+    const nextIn = $("nextIn");
+    const listEl = $("list");
+    const timelineScroller = $("timelineScroller");
+    const startBtn = $("startBtn");
+    const pauseBtn = $("pauseBtn");
+    const stopBtn  = $("stopBtn");
+    const resetBtn = $("resetBtn");
+    const minus10Btn = $("minus10Btn");
+    const plus10Btn  = $("plus10Btn");
+    const mStart = $("mStart");
+    const mPause = $("mPause");
+    const mStop  = $("mStop");
+    const scrubber = $("scrubber");
+    const scrubAt = $("scrubAt");
+    const scrubTotal = $("scrubTotal");
+    const toast = $("toast");
+    const vol = $("vol");
+    const testBeepBtn = $("testBeep");
+    const previewCard = $("previewCard");
+    const previewStatus = $("previewStatus");
+    const previewStage = $("previewStage");
+    const thumbStrip = $("thumbStrip");
+    const resultNav = $("resultNav");
+    const resultCount = $("resultCount");
+    const prevMatchBtn = $("prevMatchBtn");
+    const nextMatchBtn = $("nextMatchBtn");
+    const datasetMatchName = $("datasetMatchName");
+    const datasetCategory = $("datasetCategory");
+    const datasetEquipment = $("datasetEquipment");
+    const datasetInstructions = $("datasetInstructions");
+    const datasetPrimary = $("datasetPrimary");
+    const datasetSecondary = $("datasetSecondary");
+    const datasetSourceStatus = $("datasetSourceStatus");
+
+    const AUDIO_KEY = "WORKOUT_TEMPLATE_beep_volume_v1";
+    const STATE_KEY = "WORKOUT_TEMPLATE_state_v4_" + (WORKOUT_ID || "default");
+
+    const state = {
+      running: false,
+      startedOnce: false,
+      startEpoch: 0,
+      elapsedBefore: 0,
+      elapsed: 0,
+      lastSec: -1
+    };
+
+    const datasetState = {
+      loaded: false,
+      loading: false,
+      failed: false,
+      source: "none",
+      items: [],
+      normalizedIndex: new Map(),
+      currentKey: "",
+      currentExerciseName: "",
+      currentRecord: null,
+      currentMatches: [],
+      currentMatchIndex: 0,
+      currentImages: [],
+      currentImageIndex: 0,
+      failureReason: ""
+    };
+
+    function setPreviewCardVisible(visible){
+      if(!previewCard) return;
+      previewCard.hidden = !visible;
+    }
+
+    function showToast(msg, ms=1400){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(()=>toast.classList.remove("show"), ms);
+    }
+
+    function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
+
+    function parseHMS(hms){
+      const parts = String(hms).trim().split(":").map(Number);
+      if(parts.some(n => Number.isNaN(n))) throw new Error("Bad time: " + hms);
+      if(parts.length === 2){
+        const [m,s] = parts;
+        return m*60 + s;
+      }
+      if(parts.length === 3){
+        const [h,m,s] = parts;
+        return h*3600 + m*60 + s;
+      }
+      throw new Error("Time must be HH:MM:SS (or MM:SS): " + hms);
+    }
+
+    function fmt(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
+      return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+    }
+
+    function escapeHTML(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function normalizeText(value){
+      return String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[–—−]/g, "-")
+        .replace(/&/g, " and ")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim()
+        .replace(/\s+/g, " ");
+    }
+
+    function buildYouTubeSearchUrl(query) {
+      return "https://www.youtube.com/results?search_query=" + encodeURIComponent(String(query || "stretch exercise")).replace(/%20/g, "+");
+    }
+
+    function getSearchQuery(block){
+      return (block && (block.youtubeQuery || block.title || WORKOUT_NAME || "stretch exercise")) || "stretch exercise";
+    }
+
+    function getDbNamesForBlock(block){
+      const raw = block && block.dbName != null ? block.dbName : (block ? block.title : "");
+      const list = Array.isArray(raw) ? raw : [raw];
+      return list.map(v => String(v || "").trim()).filter(Boolean);
+    }
+
+    function stripWorkoutMetadata(normalized){
+      return String(normalized || "")
+        .replace(/\b(amrap|emom|tabata|density|warm up|warmup|cool down|cooldown|finisher|recovery|interval|intervals|tempo|easy|steady|moderate|hard controlled|controlled|hard)\b/g, " ")
+        .replace(/\b(rir|rpe|rm|bpm|sec|secs|second|seconds|min|mins|minute|minutes|rest|hold|holds|switch|round|rounds)\b/g, " ")
+        .replace(/\b(left|right|single arm|single leg|one arm|one leg|alternating|alternate)\b/g, " ")
+        .replace(/\b(dumbbell|barbell|kettlebell|cable|band|machine|bodyweight)\b/g, " ")
+        .replace(/\b(seated|standing|lying|incline|decline)\b/g, " ")
+        .replace(/\b(x|for|to|at)\b/g, " ")
+        .replace(/\b\d+\s*(?:rir|rpe|rm|reps?|rep|seconds?|secs?|minutes?|mins?|kg|lb|lbs|percent|%)\b/g, " ")
+        .replace(/\b\d+\s*-\s*\d+\b/g, " ")
+        .replace(/\b\d+\b/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function buildSearchVariants(value){
+      const normalized = normalizeText(value);
+      if(!normalized) return [];
+      const variants = new Set([normalized]);
+      const stripped = stripWorkoutMetadata(normalized);
+      if(stripped) variants.add(stripped);
+
+      const compact = stripped.replace(/\b(presses|press|raises|raise|extensions|extension|curls|curl|squats|squat|rows|row|lunges|lunge|crunches|crunch|flies|fly)\b/g, (word)=>{
+        if(word.endsWith("es")) return word.slice(0, -2);
+        if(word.endsWith("s")) return word.slice(0, -1);
+        return word;
+      }).replace(/\s+/g, " ").trim();
+      if(compact) variants.add(compact);
+
+      const tokens = stripped.split(" ").filter(Boolean);
+      if(tokens.length > 1){
+        for(const token of tokens){
+          if(token.length >= 4) variants.add(token);
+        }
+      }
+
+      return Array.from(variants).filter(Boolean);
+    }
+
+    function normalizeExercises(exs){
+      const out = [];
+      const allAbsolute = exs.length && exs.every(x => x.start && x.end);
+      if(allAbsolute){
+        const sorted = [...exs].map((x,i)=>({...x,_i:i})).sort((a,b)=>parseHMS(a.start)-parseHMS(b.start));
+        for(const x of sorted){
+          const s = parseHMS(x.start), e = parseHMS(x.end);
+          if(e <= s) throw new Error("Exercise end must be after start: " + x.title);
+          out.push({
+            title:x.title,
+            start:s,
+            end:e,
+            notes:x.notes||"",
+            youtubeQuery:x.youtubeQuery||x.videoQuery||"",
+            dbName:x.dbName ?? x.title
+          });
+        }
+        for(let i=1;i<out.length;i++){
+          if(out[i].start < out[i-1].end) throw new Error("Exercises overlap near: " + out[i].title);
+        }
+        return out;
+      }
+
+      let cursor = 0;
+      for(const x of exs){
+        if(x.start && x.end){
+          const s = parseHMS(x.start), e = parseHMS(x.end);
+          if(e <= s) throw new Error("Exercise end must be after start: " + x.title);
+          if(s < cursor) throw new Error("Exercise overlaps previous. Fix timing near: " + x.title);
+          cursor = Math.max(cursor, e);
+          out.push({
+            title:x.title,
+            start:s,
+            end:e,
+            notes:x.notes||"",
+            youtubeQuery:x.youtubeQuery||x.videoQuery||"",
+            dbName:x.dbName ?? x.title
+          });
+        }else if(x.duration){
+          const d = parseHMS(x.duration);
+          if(d <= 0) throw new Error("Duration must be > 0: " + x.title);
+          const s = cursor, e = cursor + d;
+          cursor = e;
+          out.push({
+            title:x.title,
+            start:s,
+            end:e,
+            notes:x.notes||"",
+            youtubeQuery:x.youtubeQuery||x.videoQuery||"",
+            dbName:x.dbName ?? x.title
+          });
+        }else{
+          throw new Error("Each exercise must have either (start+end) OR duration: " + x.title);
+        }
+      }
+      return out;
+    }
+
+    let BLOCKS = [];
+    let TOTAL_SEC = 0;
+
+    let audioCtx = null;
+    function getVolume(){ return clamp(Number(vol.value || 0) / 100, 0, 1); }
+    function ensureAudio(){
+      if(audioCtx) return audioCtx;
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if(!Ctx) return null;
+      audioCtx = new Ctx();
+      return audioCtx;
+    }
+    function beep(pattern="short"){
+      const v = getVolume();
+      if(v <= 0) return;
+      const ctx = ensureAudio();
+      if(!ctx) return;
+      if(ctx.state === "suspended"){ ctx.resume().catch(()=>{}); }
+      const now = ctx.currentTime;
+      const playTone = (t0, dur, freq) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.0001, t0);
+        gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, v), t0 + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t0);
+        osc.stop(t0 + dur + 0.02);
+      };
+      if(pattern === "start"){
+        playTone(now + 0.00, 0.10, 880);
+        playTone(now + 0.14, 0.10, 880);
+      }else if(pattern === "end"){
+        playTone(now + 0.00, 0.10, 988);
+        playTone(now + 0.14, 0.10, 988);
+        playTone(now + 0.28, 0.14, 988);
+      }else{
+        playTone(now + 0.00, 0.12, 880);
+      }
+    }
+    function loadVolume(){
+      try{
+        const saved = localStorage.getItem(AUDIO_KEY);
+        if(saved !== null) vol.value = String(clamp(Number(saved), 0, 100));
+      }catch(e){}
+    }
+    function saveVolume(){
+      try{ localStorage.setItem(AUDIO_KEY, String(clamp(Number(vol.value||0), 0, 100))); }catch(e){}
+    }
+
+    function recompute(){
+      pillId.textContent = WORKOUT_ID || "WORKOUT";
+      pillName.textContent = WORKOUT_NAME || "Workout";
+      BLOCKS = normalizeExercises(EXERCISES);
+      TOTAL_SEC = BLOCKS.length ? BLOCKS[BLOCKS.length-1].end : 0;
+      totalLen.textContent = fmt(TOTAL_SEC);
+      document.title = (WORKOUT_ID ? WORKOUT_ID + " • " : "") + (WORKOUT_NAME || "Workout") + " (" + fmt(TOTAL_SEC) + ")";
+      scrubber.max = String(TOTAL_SEC);
+      scrubber.value = "0";
+      scrubTotal.textContent = fmt(TOTAL_SEC);
+      scrubAt.textContent = "00:00";
+      buildList();
+    }
+
+    function blockIndexAt(sec){
+      if(!BLOCKS.length) return 0;
+      sec = clamp(sec, 0, Math.max(0, TOTAL_SEC - 0.0001));
+      return BLOCKS.findIndex(b => sec >= b.start && sec < b.end);
+    }
+    function blockAt(sec){
+      const i = blockIndexAt(sec);
+      return BLOCKS[Math.max(0,i)] || {title:"—", start:0, end:0, notes:"", youtubeQuery:"", dbName:""};
+    }
+    function nextBlockAt(sec){
+      const i = blockIndexAt(sec);
+      return BLOCKS[i+1] || null;
+    }
+
+    function save(){
+      try{
+        localStorage.setItem(STATE_KEY, JSON.stringify({
+          running: state.running,
+          startedOnce: state.startedOnce,
+          startEpoch: state.startEpoch,
+          elapsedBefore: state.elapsedBefore,
+          elapsed: state.elapsed
+        }));
+      }catch(e){}
+    }
+    function load(){
+      try{
+        const raw = localStorage.getItem(STATE_KEY);
+        if(!raw) return;
+        const p = JSON.parse(raw);
+        Object.assign(state, p || {});
+        if(state.running && state.startEpoch){
+          const delta = (Date.now() - state.startEpoch)/1000;
+          state.elapsed = clamp(Math.floor(state.elapsedBefore + Math.max(0,delta)), 0, TOTAL_SEC);
+        }
+      }catch(e){}
+    }
+
+    let userScrollingTimeline = false;
+    let userScrollTimeout = null;
+    let lastAutoScrollIdx = -1;
+    function setUserScrolling(){
+      userScrollingTimeline = true;
+      clearTimeout(userScrollTimeout);
+      userScrollTimeout = setTimeout(()=>{ userScrollingTimeline = false; }, 1400);
+    }
+    /* ── Timeline height sync ─────────────────────────────────────────────
+       Section 1 = hero card (timers, scrubber, next-section).
+       Section 2 = timeline card (the list of workout blocks).
+
+       Problem: the CSS grid row = max(section1, section2). Many timeline
+       blocks inflate section 2, stretching section 1 taller — wrong.
+
+       Fix: read the INNER pad div of the hero card. That div has no
+       flex-grow so its offsetHeight is always the natural content height,
+       never inflated by the grid stretch applied to the hero card itself.
+
+       Math (to make section 2 exactly match section 1 height):
+         timelineCard = 1(border) + 14(pad) + hintH + 10(gap) + scrollerH + 14(pad) + 1(border)
+                      = 40 + hintH + scrollerH
+         target       = heroPadDiv.offsetHeight + 2  (hero card's own borders)
+         ∴ scrollerH  = heroPadDiv.offsetHeight − 38 − hintH
+    ──────────────────────────────────────────────────────────────────────── */
+    const _heroCard  = document.querySelector(".hero");
+    const _heroInner = _heroCard
+      ? (_heroCard.querySelector(".pad") || _heroCard.firstElementChild)
+      : null;
+    const hintRowEl  = document.querySelector(".hintRow");
+
+    function syncTimelineHeight(){
+      if(!_heroInner || !timelineScroller) return;
+      const heroNatural = _heroInner.offsetHeight;   /* never inflated by grid */
+      const hintH       = hintRowEl ? hintRowEl.offsetHeight : 38;
+      const maxH        = Math.max(150, heroNatural - 38 - hintH);
+      timelineScroller.style.maxHeight = maxH + "px";
+    }
+
+    if(typeof ResizeObserver !== "undefined" && _heroInner){
+      new ResizeObserver(syncTimelineHeight).observe(_heroInner);
+    }
+    window.addEventListener("resize", syncTimelineHeight);
+
+    function scrollTimelineToActive(pinTop=true){
+      if(!timelineScroller) return;
+      const active = timelineScroller.querySelector(".item.active");
+      if(!active) return;
+      if(userScrollingTimeline) return;
+      const sc = timelineScroller;
+      const pad = 6;
+      const targetTop = Math.max(0, active.offsetTop - pad);
+      if(pinTop){
+        sc.scrollTo({ top: targetTop, behavior: "smooth" });
+      }else{
+        const aTop = active.offsetTop;
+        const aBottom = aTop + active.offsetHeight;
+        const vTop = sc.scrollTop;
+        const vBottom = vTop + sc.clientHeight;
+        if(aTop < vTop + 8){
+          sc.scrollTo({ top: Math.max(0, aTop - 8), behavior: "smooth" });
+        }else if(aBottom > vBottom - 8){
+          sc.scrollTo({ top: aBottom - sc.clientHeight + 8, behavior: "smooth" });
+        }
+      }
+    }
+
+    function buildList(){
+      listEl.innerHTML = "";
+      BLOCKS.forEach((b, idx)=>{
+        const div = document.createElement("div");
+        div.className = "item";
+        div.dataset.idx = idx;
+        div.innerHTML = `
+          <div class="tcol">${fmt(b.start)}–${fmt(b.end)}</div>
+          <div class="mcol">
+            <div class="timelineTitle">
+              <div class="name">${escapeHTML(b.title)}</div>
+            </div>
+            <div class="desc">${escapeHTML(b.notes || "")}</div>
+          </div>
+          <div class="timelineActions">
+            <button class="miniAction" type="button" data-role="search" aria-label="Search ${escapeHTML(b.title)} on YouTube" title="Search on YouTube">
+              <i class="fa-brands fa-youtube"></i>
+            </button>
+            <div class="jump">Jump</div>
+          </div>
+        `;
+        const searchBtn = div.querySelector('[data-role="search"]');
+        if(searchBtn){
+          searchBtn.addEventListener("click", (e)=>{
+            e.preventDefault();
+            e.stopPropagation();
+            const url = buildYouTubeSearchUrl(getSearchQuery(b));
+            window.open(url, "_blank", "noopener,noreferrer");
+          });
+        }
+        div.addEventListener("click", ()=>{
+          setElapsed(b.start);
+          update(true);
+          requestAnimationFrame(()=>scrollTimelineToActive(true));
+        });
+        listEl.appendChild(div);
+      });
+    }
+
+    function setElapsed(sec){
+      sec = clamp(Math.floor(sec), 0, TOTAL_SEC);
+      state.elapsed = sec;
+      if(state.running){
+        state.startEpoch = Date.now();
+        state.elapsedBefore = sec;
+        state.lastSec = sec;
+      }
+      save();
+    }
+
+    function setButtons(){
+      startBtn.disabled = state.running || TOTAL_SEC<=0;
+      pauseBtn.disabled = !state.startedOnce;
+      stopBtn.disabled  = !state.startedOnce;
+      mStart.disabled = state.running || TOTAL_SEC<=0;
+      mPause.disabled = !state.startedOnce;
+      mStop.disabled  = !state.startedOnce;
+      const pauseLabel = state.running ? "Pause" : (state.startedOnce ? "Resume" : "Pause");
+      pauseBtn.innerHTML = `<i class="fa-solid ${state.running ? 'fa-pause' : (state.startedOnce ? 'fa-play' : 'fa-pause')}"></i> ${pauseLabel}`;
+      mPause.innerHTML   = pauseBtn.innerHTML;
+      stateDot.className = "dot " + (state.running ? "go" : (state.startedOnce ? "pause" : "stop"));
+    }
+
+    let lastBlockIdxForBeep = -1;
+
+    function start(){
+      if(state.running || TOTAL_SEC <= 0) return;
+      ensureAudio();
+      state.running = true;
+      state.startedOnce = true;
+      state.startEpoch = Date.now();
+      state.elapsedBefore = state.elapsed;
+      state.lastSec = -1;
+      lastBlockIdxForBeep = blockIndexAt(state.elapsed);
+      beep("start");
+      setButtons();
+      save();
+      loop();
+      showToast("Started");
+    }
+
+    function pause(){
+      if(!state.running) return;
+      state.running = false;
+      const delta = (Date.now() - state.startEpoch)/1000;
+      state.elapsed = clamp(Math.floor(state.elapsedBefore + Math.max(0,delta)), 0, TOTAL_SEC);
+      save();
+      setButtons();
+      update(true);
+      cancelAnimationFrame(loop._raf);
+      loop._raf = null;
+      beep("short");
+      showToast("Paused");
+    }
+
+    function resume(){
+      if(state.running) return;
+      ensureAudio();
+      state.running = true;
+      state.startedOnce = true;
+      state.startEpoch = Date.now();
+      state.elapsedBefore = state.elapsed;
+      state.lastSec = -1;
+      lastBlockIdxForBeep = blockIndexAt(state.elapsed);
+      beep("start");
+      setButtons();
+      save();
+      loop();
+      showToast("Resumed");
+    }
+
+    function stop(){
+      if(!state.startedOnce) return;
+      state.running = false;
+      save();
+      setButtons();
+      update(true);
+      cancelAnimationFrame(loop._raf);
+      loop._raf = null;
+      beep("short");
+      showToast("Stopped");
+    }
+
+    function resetAll(){
+      state.running = false;
+      state.startedOnce = false;
+      state.startEpoch = 0;
+      state.elapsedBefore = 0;
+      state.elapsed = 0;
+      state.lastSec = -1;
+      lastBlockIdxForBeep = -1;
+      lastAutoScrollIdx = -1;
+      save();
+      setButtons();
+      update(true);
+      cancelAnimationFrame(loop._raf);
+      loop._raf = null;
+      scrubber.value = "0";
+      scrubAt.textContent = "00:00";
+      showToast("Reset");
+      requestAnimationFrame(()=>scrollTimelineToActive(true));
+    }
+
+    function nudge(seconds){
+      if(TOTAL_SEC<=0) return;
+      const beforeIdx = blockIndexAt(state.elapsed);
+      setElapsed(state.elapsed + seconds);
+      update(true);
+      const afterIdx = blockIndexAt(state.elapsed);
+      if(afterIdx !== beforeIdx){
+        beep("end");
+        setTimeout(()=>beep("start"), 140);
+        lastBlockIdxForBeep = afterIdx;
+      }
+      showToast((seconds>0?"+":"") + seconds + "s");
+    }
+
+    function loop(){
+      if(!state.running) return;
+      const delta = (Date.now() - state.startEpoch)/1000;
+      const sec = clamp(Math.floor(state.elapsedBefore + Math.max(0,delta)), 0, TOTAL_SEC);
+      state.elapsed = sec;
+      if(sec !== state.lastSec){
+        state.lastSec = sec;
+        save();
+      }
+      update(false);
+      const idx = blockIndexAt(sec);
+      if(idx !== lastBlockIdxForBeep){
+        if(lastBlockIdxForBeep !== -1) beep("end");
+        beep("start");
+        lastBlockIdxForBeep = idx;
+      }
+      if(sec >= TOTAL_SEC){
+        state.running = false;
+        save();
+        setButtons();
+        update(true);
+        beep("end");
+        showToast("Finished");
+        return;
+      }
+      loop._raf = requestAnimationFrame(loop);
+    }
+
+    function renderChipSet(container, items){
+      const clean = Array.isArray(items) ? items.filter(Boolean) : [];
+      if(!clean.length){
+        container.innerHTML = '<span class="muted">—</span>';
+        return;
+      }
+      container.innerHTML = clean.map(item => `<span class="chip">${escapeHTML(item)}</span>`).join("");
+    }
+
+    function clearPreview(message){
+      datasetState.currentRecord = null;
+      datasetState.currentMatches = [];
+      datasetState.currentMatchIndex = 0;
+      datasetState.currentImages = [];
+      datasetState.currentImageIndex = 0;
+      previewStage.className = "previewStage empty";
+      previewStage.innerHTML = escapeHTML(message || "No dataset image preview for this move yet.");
+      thumbStrip.hidden = true;
+      thumbStrip.innerHTML = "";
+      resultNav.hidden = true;
+      resultCount.textContent = "0 / 0";
+      prevMatchBtn.disabled = true;
+      nextMatchBtn.disabled = true;
+      datasetMatchName.textContent = "—";
+      datasetCategory.textContent = "—";
+      datasetEquipment.textContent = "—";
+      datasetInstructions.textContent = "—";
+      renderChipSet(datasetPrimary, []);
+      renderChipSet(datasetSecondary, []);
+    }
+
+    function renderPreviewImage(index){
+      const images = datasetState.currentImages || [];
+      if(!images.length){
+        clearPreview("No dataset image preview for this move yet.");
+        return;
+      }
+      const safeIndex = clamp(index, 0, images.length - 1);
+      datasetState.currentImageIndex = safeIndex;
+      const imgSrc = images[safeIndex];
+      previewStage.className = "previewStage";
+      previewStage.innerHTML = `<img src="${encodeURI(imgSrc)}" alt="Exercise preview ${safeIndex + 1}" loading="lazy">`;
+      Array.from(thumbStrip.querySelectorAll(".thumb")).forEach((btn, i) => btn.classList.toggle("active", i === safeIndex));
+    }
+
+    function renderMatchNav(){
+      const total = datasetState.currentMatches.length;
+      const current = total ? datasetState.currentMatchIndex + 1 : 0;
+      resultNav.hidden = total <= 1;
+      resultCount.textContent = total ? `${current} / ${total}` : "0 / 0";
+      prevMatchBtn.disabled = total <= 1;
+      nextMatchBtn.disabled = total <= 1;
+    }
+
+    function renderDatasetMatch(record, requestedName){
+      const images = Array.isArray(record.images) ? record.images.map(path => IMAGE_BASE + path) : [];
+      datasetState.currentRecord = record;
+      datasetState.currentImages = images;
+      datasetState.currentImageIndex = 0;
+      datasetMatchName.textContent = record.name || requestedName || "—";
+      datasetCategory.textContent = record.category || "—";
+      datasetEquipment.textContent = record.equipment || "—";
+      const instructions = Array.isArray(record.instructions) ? record.instructions.filter(Boolean) : [];
+      datasetInstructions.innerHTML = instructions.length
+        ? `<ol class="instructionsList">${instructions.slice(0,4).map(step => `<li>${escapeHTML(step)}</li>`).join("")}</ol>`
+        : "—";
+      renderChipSet(datasetPrimary, record.primaryMuscles || []);
+      renderChipSet(datasetSecondary, record.secondaryMuscles || []);
+      renderMatchNav();
+
+      if(images.length){
+        thumbStrip.hidden = false;
+        thumbStrip.innerHTML = images.map((src, idx) => `
+          <button class="thumb ${idx === 0 ? "active" : ""}" type="button" data-idx="${idx}" aria-label="Preview image ${idx + 1}">
+            <img src="${encodeURI(src)}" alt="Preview thumbnail ${idx + 1}" loading="lazy">
+          </button>
+        `).join("");
+        thumbStrip.querySelectorAll(".thumb").forEach(btn => {
+          btn.addEventListener("click", () => renderPreviewImage(Number(btn.dataset.idx || 0)));
+        });
+        renderPreviewImage(0);
+      }else{
+        clearPreview("Exact dataset match found, but no hosted images are available for it.");
+        datasetMatchName.textContent = record.name || requestedName || "—";
+        datasetCategory.textContent = record.category || "—";
+        datasetEquipment.textContent = record.equipment || "—";
+        datasetInstructions.innerHTML = instructions.length
+          ? `<ol class="instructionsList">${instructions.slice(0,4).map(step => `<li>${escapeHTML(step)}</li>`).join("")}</ol>`
+          : "—";
+        renderChipSet(datasetPrimary, record.primaryMuscles || []);
+        renderChipSet(datasetSecondary, record.secondaryMuscles || []);
+      }
+    }
+
+    function setCurrentDatasetMatch(index, requestedName){
+      const matches = datasetState.currentMatches || [];
+      if(!matches.length){
+        clearPreview("No dataset image preview for this move yet.");
+        return;
+      }
+      const safeIndex = clamp(index, 0, matches.length - 1);
+      datasetState.currentMatchIndex = safeIndex;
+      renderDatasetMatch(matches[safeIndex], requestedName || datasetState.currentExerciseName);
+    }
+
+    function setDatasetSourceStatus(){
+      setPreviewCardVisible(datasetState.loaded || datasetState.loading);
+      if(datasetState.loading){
+        datasetSourceStatus.textContent = "Dataset source: loading remote exercise database…";
+        return;
+      }
+      if(datasetState.loaded){
+        datasetSourceStatus.textContent = datasetState.source === "remote"
+          ? "Dataset source: live public exercise database."
+          : "Dataset source: cached local copy from a previous successful load.";
+        return;
+      }
+      if(datasetState.failed){
+        datasetSourceStatus.textContent = "Dataset source unavailable. The timer still works without it.";
+        return;
+      }
+      datasetSourceStatus.textContent = "Dataset source idle.";
+    }
+
+    function indexDataset(items){
+      const index = new Map();
+      for(const item of items){
+        const key = normalizeText(item && item.name);
+        if(!key || index.has(key)) continue;
+        index.set(key, item);
+      }
+      datasetState.items = items;
+      datasetState.normalizedIndex = index;
+      datasetState.loaded = true;
+      datasetState.failed = false;
+      datasetState.loading = false;
+      setDatasetSourceStatus();
+    }
+
+    function findDatasetMatches(names){
+      const queries = Array.from(new Set((names || []).flatMap(buildSearchVariants))).filter(Boolean);
+      if(!queries.length) return [];
+
+      const scored = new Map();
+      for(const item of datasetState.items){
+        const normalizedName = normalizeText(item && item.name);
+        if(!normalizedName) continue;
+
+        let bestScore = 0;
+        for(const query of queries){
+          if(!query) continue;
+          let score = 0;
+          if(normalizedName === query){
+            score = 1000;
+          }else if(normalizedName.startsWith(query) || query.startsWith(normalizedName)){
+            score = 760 - Math.abs(normalizedName.length - query.length);
+          }else if(normalizedName.includes(query) || query.includes(normalizedName)){
+            score = 680 - Math.abs(normalizedName.length - query.length);
+          }else{
+            const queryTokens = query.split(" ").filter(Boolean);
+            const nameTokens = normalizedName.split(" ").filter(Boolean);
+            const overlap = queryTokens.filter(token => nameTokens.includes(token));
+            if(overlap.length){
+              const coverage = overlap.length / queryTokens.length;
+              const density = overlap.length / nameTokens.length;
+              score = Math.round((coverage * 420) + (density * 220));
+              if(overlap.length === queryTokens.length && queryTokens.length >= 2) score += 120;
+              if(queryTokens.length === 1 && overlap[0] && overlap[0].length >= 5) score += 70;
+            }
+          }
+          if(score > bestScore) bestScore = score;
+        }
+
+        if(bestScore >= 280){
+          const key = normalizeText(item.name);
+          const existing = scored.get(key);
+          if(!existing || bestScore > existing.score){
+            scored.set(key, { item, score: bestScore });
+          }
+        }
+      }
+
+      return Array.from(scored.values())
+        .sort((a, b) => b.score - a.score || String(a.item.name || "").localeCompare(String(b.item.name || "")))
+        .slice(0, 8)
+        .map(entry => entry.item);
+    }
+
+    function readCachedDataset(){
+      try{
+        const raw = localStorage.getItem(DATASET_CACHE_KEY);
+        const t = Number(localStorage.getItem(DATASET_CACHE_TIME_KEY) || 0);
+        if(!raw) return null;
+        const parsed = JSON.parse(raw);
+        if(!Array.isArray(parsed) || !parsed.length) return null;
+        return {
+          items: parsed,
+          isFresh: Date.now() - t <= DATASET_CACHE_MAX_AGE_MS
+        };
+      }catch(err){
+        return null;
+      }
+    }
+
+    function writeCachedDataset(items){
+      try{
+        localStorage.setItem(DATASET_CACHE_KEY, JSON.stringify(items));
+        localStorage.setItem(DATASET_CACHE_TIME_KEY, String(Date.now()));
+      }catch(err){}
+    }
+
+    async function ensureDatasetLoaded(){
+      if(datasetState.loaded) return true;
+      if(datasetState.loading) return false;
+      datasetState.loading = true;
+      datasetState.failed = false;
+      datasetState.failureReason = "";
+      setDatasetSourceStatus();
+
+      const cached = readCachedDataset();
+      if(cached && cached.isFresh){
+        datasetState.source = "cache";
+        indexDataset(cached.items);
+        return true;
+      }
+
+      try{
+        const response = await fetch(DATA_URL, { cache: "force-cache" });
+        if(!response.ok) throw new Error("HTTP " + response.status);
+        const items = await response.json();
+        if(!Array.isArray(items)) throw new Error("Unexpected dataset format");
+        writeCachedDataset(items);
+        datasetState.source = "remote";
+        indexDataset(items);
+        return true;
+      }catch(err){
+        if(cached && Array.isArray(cached.items) && cached.items.length){
+          datasetState.source = "cache";
+          indexDataset(cached.items);
+          datasetSourceStatus.textContent = "Dataset source: remote fetch failed, using cached local copy.";
+          return true;
+        }
+        datasetState.loading = false;
+        datasetState.loaded = false;
+        datasetState.failed = true;
+        datasetState.failureReason = String(err && err.message ? err.message : err || "Unknown error");
+        setDatasetSourceStatus();
+        return false;
+      }
+    }
+
+    async function refreshDatasetPreview(block){
+      const names = getDbNamesForBlock(block);
+      const primaryRequestedName = names[0] || block.title || "";
+      const previewKey = names.join("|") + "__" + (block && block.title ? block.title : "");
+      if(datasetState.currentKey === previewKey && (datasetState.loaded || datasetState.failed)) return;
+      datasetState.currentKey = previewKey;
+      datasetState.currentExerciseName = primaryRequestedName;
+      previewStatus.textContent = "Checking dataset preview…";
+      clearPreview("Checking dataset preview…");
+
+      const ready = await ensureDatasetLoaded();
+      if(datasetState.currentKey !== previewKey) return;
+
+      if(!ready){
+        setPreviewCardVisible(false);
+        return;
+      }
+
+      setPreviewCardVisible(true);
+      const matches = findDatasetMatches(names);
+
+      if(!matches.length){
+        previewStatus.textContent = "No dataset match found for this move.";
+        clearPreview("No close dataset match found for this move. Add a dbName override if you want a more specific result here.");
+        return;
+      }
+
+      datasetState.currentMatches = matches;
+      datasetState.currentMatchIndex = 0;
+      previewStatus.textContent = matches.length === 1
+        ? "Best dataset match found."
+        : `Showing best dataset match (${matches.length} close results found).`;
+      setCurrentDatasetMatch(0, primaryRequestedName);
+    }
+
+    function update(hard){
+      const sec = clamp(state.elapsed, 0, TOTAL_SEC);
+      masterTime.textContent = fmt(Math.max(0, TOTAL_SEC - sec));
+      const b = blockAt(sec);
+      const nb = nextBlockAt(sec);
+      const sectionLength = Math.max(0, b.end - b.start);
+      const sectionElapsed = clamp(sec - b.start, 0, sectionLength);
+      const sectionRemaining = Math.max(0, b.end - sec);
+      phaseBig.textContent = b.title;
+      windowTxt.textContent = fmt(b.start) + "–" + fmt(b.end);
+      sectionTime.textContent = fmt(sectionRemaining);
+      sectionLen.textContent = fmt(sectionLength);
+      sectionElap.textContent = fmt(sectionElapsed);
+      const hasNotes = !!(b.notes && b.notes.trim().length);
+      currentGuidanceText.textContent = hasNotes ? b.notes : "No extra guidance for this section.";
+      if(nb){
+        nextBig.textContent = nb.title;
+        nextIn.textContent = fmt(Math.max(0, nb.start - sec));
+      }else{
+        nextBig.textContent = "Finish";
+        nextIn.textContent = fmt(0);
+      }
+      const pct = TOTAL_SEC > 0 ? (sec / TOTAL_SEC) * 100 : 0;
+      barFill.style.width = pct.toFixed(2) + "%";
+      const idx = blockIndexAt(sec);
+      listEl.querySelectorAll(".item").forEach((n,i)=> n.classList.toggle("active", i===idx));
+      if(state.running && idx !== lastAutoScrollIdx){
+        lastAutoScrollIdx = idx;
+        requestAnimationFrame(()=>scrollTimelineToActive(true));
+      }
+      if(!scrubber.matches(":active")){
+        scrubber.value = String(sec);
+        scrubAt.textContent = fmt(sec);
+      }
+      setButtons();
+      refreshDatasetPreview(b);
+    }
+
+    startBtn.addEventListener("click", start);
+    pauseBtn.addEventListener("click", ()=> state.running ? pause() : resume());
+    stopBtn.addEventListener("click", stop);
+    resetBtn.addEventListener("click", resetAll);
+    minus10Btn.addEventListener("click", ()=>nudge(-10));
+    plus10Btn.addEventListener("click", ()=>nudge(10));
+    mStart.addEventListener("click", start);
+    mPause.addEventListener("click", ()=> state.running ? pause() : resume());
+    mStop.addEventListener("click", stop);
+
+    scrubber.addEventListener("input", ()=>{
+      scrubAt.textContent = fmt(Number(scrubber.value || 0));
+    });
+    scrubber.addEventListener("change", ()=>{
+      const beforeIdx = blockIndexAt(state.elapsed);
+      const s = Number(scrubber.value || 0);
+      setElapsed(s);
+      update(true);
+      const afterIdx = blockIndexAt(state.elapsed);
+      if(afterIdx !== beforeIdx){
+        beep("end");
+        setTimeout(()=>beep("start"), 140);
+        lastBlockIdxForBeep = afterIdx;
+      }
+      requestAnimationFrame(()=>scrollTimelineToActive(true));
+    });
+
+    vol.addEventListener("input", saveVolume);
+    testBeepBtn.addEventListener("click", ()=>{
+      ensureAudio();
+      beep("short");
+      showToast("Beep test (" + vol.value + "%)");
+    });
+
+    prevMatchBtn.addEventListener("click", ()=>{
+      const total = datasetState.currentMatches.length;
+      if(total <= 1) return;
+      const nextIndex = (datasetState.currentMatchIndex - 1 + total) % total;
+      setCurrentDatasetMatch(nextIndex, datasetState.currentExerciseName);
+    });
+    nextMatchBtn.addEventListener("click", ()=>{
+      const total = datasetState.currentMatches.length;
+      if(total <= 1) return;
+      const nextIndex = (datasetState.currentMatchIndex + 1) % total;
+      setCurrentDatasetMatch(nextIndex, datasetState.currentExerciseName);
+    });
+
+    timelineScroller.addEventListener("wheel", setUserScrolling, { passive:true });
+    timelineScroller.addEventListener("touchmove", setUserScrolling, { passive:true });
+    timelineScroller.addEventListener("pointerdown", setUserScrolling, { passive:true });
+
+    window.addEventListener("keydown", (e)=>{
+      const k = e.key.toLowerCase();
+      if(k === " "){
+        e.preventDefault();
+        if(!state.startedOnce && !state.running) start();
+        else state.running ? pause() : resume();
+      }else if(k === "s"){
+        stop();
+      }else if(k === "r"){
+        resetAll();
+      }else if(e.key === "ArrowLeft"){
+        nudge(-10);
+      }else if(e.key === "ArrowRight"){
+        nudge(10);
+      }
+    });
+
+    try{
+      loadVolume();
+      recompute();
+      load();
+      setPreviewCardVisible(false);
+      setButtons();
+      setDatasetSourceStatus();
+      update(true);
+      syncTimelineHeight();
+      requestAnimationFrame(()=>{ syncTimelineHeight(); scrollTimelineToActive(false); });
+      if(state.running){
+        lastBlockIdxForBeep = blockIndexAt(state.elapsed);
+        lastAutoScrollIdx = lastBlockIdxForBeep;
+        loop();
+      }else{
+        lastBlockIdxForBeep = -1;
+        lastAutoScrollIdx = blockIndexAt(state.elapsed);
+      }
+    }catch(err){
+      document.body.innerHTML = `
+        <div style="max-width:920px;margin:22px auto;padding:18px;font-family:${getComputedStyle(document.body).fontFamily};color:${getComputedStyle(document.body).color}">
+          <h2 style="margin:0 0 10px 0;">Configuration Error</h2>
+          <div style="padding:14px;border:1px solid rgba(255,255,255,.18);border-radius:14px;background:rgba(0,0,0,.25);">
+            <div style="font-family:${getComputedStyle(document.body).getPropertyValue('--mono')};white-space:pre-wrap;">${String(err && err.message ? err.message : err)}</div>
+            <div style="margin-top:10px;opacity:.8;">Fix the USER CONFIGURATION SECTION at the top of the HTML, then reload.</div>
+          </div>
+        </div>
+      `;
+      console.error(err);
+    }
+  </script>
+</body>
+</html>

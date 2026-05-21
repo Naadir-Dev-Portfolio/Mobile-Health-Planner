@@ -1,0 +1,17 @@
+{
+  "section": "mobile",
+  "category": "react-native",
+  "n": 1,
+  "title": "Mobile-Health-Planner",
+  "img": "mobile-health-planner.png",
+  "imgFeatured": "mobile-health-planner-featured.png",
+  "desc": "Mobile version of custom workout plan library built in React Native and HTML CSS & Javascript via webview.",
+  "code": "https://github.com/Naadir-Dev-Portfolio/Mobile-Health-Planner/blob/main/README.md",
+  "details": "https://github.com/Naadir-Dev-Portfolio/Mobile-Health-Planner/blob/main/README.md",
+  "tags": [
+    "React Native",
+    "HTML",
+    "CSS",
+    "Javascript"
+  ]
+}
