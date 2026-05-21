@@ -1,11 +1,12 @@
+---
 <div align="center">
 
-<img src="./repo-card.png" alt="Mobile Health Planner project card" width="100%" />
+<img src="./repo-card.png" alt="Mobile-Health-Planner project card" width="100%" />
 <br /><br />
 
-<p><strong>React Native health planning app for browsing workout routines and a static supplement schedule on mobile.</strong></p>
+<p><strong>Mobile version of custom workout plan library built in React Native and HTML CSS & Javascript via webview.</strong></p>
 
-<p>Built as an Expo demo that packages local HTML workout plans and renders them inside a native mobile interface.</p>
+<p>Built for people who want fast mobile access to structured workout plans without opening separate files, browsers, or cloud tools.</p>
 
 <p>
   <a href="#overview">Overview</a> |
@@ -16,7 +17,7 @@
   <a href="#tech-stack">Tech Stack</a>
 </p>
 
-<h3><strong>Made by Naadir | May 2026</strong></h3>
+<h3><strong>Made by Naadir | February 2026</strong></h3>
 
 </div>
 
@@ -24,42 +25,44 @@
 
 ## Overview
 
-Mobile Health Planner is a React Native and Expo app that turns local workout HTML files into a mobile routine browser. It includes a searchable workout list, a WebView-based workout viewer, zoom controls, deep-link routing, and a simple supplement-plan page.
+Mobile Health Planner is a React Native and Expo mobile app that turns local workout HTML files into a clean routine browser. It packages workout plans into the app, lists them in a searchable library, and opens each plan inside a WebView.
 
-This public version is sanitized for portfolio sharing. Personal regimen data has been replaced with static demo content, generated private source folders have been removed from the public workflow, and Expo cloud identifiers have been stripped.
+The app supports a simple health-planning workflow: open the home screen, browse available routines, search by routine name or code, select a plan, then view the full workout without leaving the app. It also includes a static supplement-plan screen for demo use.
+
+The practical outcome is a mobile-first workout reference system that keeps routines easy to access, fast to search, and available as bundled local content. This public version is sanitized for portfolio sharing and removes private regimen data, private generated source folders, and Expo cloud identifiers.
 
 ## What Problem It Solves
 
-- Packages many local workout plans into a mobile-friendly list.
-- Opens each plan in a WebView without needing a separate browser.
-- Keeps routine browsing available offline once assets are bundled.
-- Demonstrates deep-link navigation into different app sections.
+- Removes the friction of digging through separate workout files on mobile.
+- Replaces manual browser-based viewing with an in-app WebView routine viewer.
+- Makes the workout library easier to search, open, and compare by routine code or title.
+- Gives a cleaner public-safe version compared with a private local workflow that depends on generated personal data.
 
 ### At a glance
 
 | Track | Analyse | Compare |
 |---|---|---|
-| Workout HTML files | Asset loading state | Workout plans by routine code |
-| Supplement schedule | WebView rendering | Local bundled content vs generated private content |
-| Search and filtering | Matching routine names | Active routine vs full routine library |
+| Bundled workout HTML files | Asset loading and WebView render state | Workout plans by routine code and title |
+| Selected routine and supplement screen | Search matches, route state, and viewer behaviour | Active routine vs full routine library |
+| Local bundled assets and demo schedule | Mobile screen output through list and WebView views | Static public demo content vs private generated source content |
 
 ## Feature Highlights
 
-- **Workout browser**, listing bundled routine files from a static asset manifest.
-- **Search filter**, quickly narrowing routines by code or title.
-- **WebView viewer**, rendering local HTML workouts inside the app.
-- **Zoom gesture**, adjusting workout page scale in the viewer.
-- **Deep-link routes**, supporting home, workouts, and supplement-plan screens.
-- **Sanitized demo regimen**, replacing private personal-care data with public-safe supplement examples.
+- **Workout browser**, lists bundled routine files from a static asset manifest so plans are easy to scan on mobile.
+- **Search filter**, narrows routines by code or title so the right workout can be opened quickly.
+- **WebView workout viewer**, renders local HTML workout plans inside the native app shell.
+- **Zoom controls**, lets the user adjust workout page scale for better readability.
+- **Deep-link routes**, supports navigation into home, workouts, and supplement-plan screens.
+- **Sanitized demo regimen**, replaces private personal-care data with public-safe static examples.
 
 ### Core capabilities
 
 | Area | What it gives you |
 |---|---|
-| **Workout assets** | Bundled HTML plans loaded through Expo Asset. |
-| **Routine navigation** | Search, open, return, and refresh flows for many plans. |
-| **Supplement demo** | A static public-safe schedule rendered in a WebView. |
-| **Mobile shell** | Expo Go-compatible app structure for quick testing. |
+| **Workout library** | A searchable mobile list of bundled workout plans. |
+| **Routine viewer** | In-app HTML rendering through WebView without opening an external browser. |
+| **Supplement demo** | A static public-safe supplement schedule for portfolio demonstration. |
+| **Mobile shell** | Expo-compatible Android and iOS testing through a native React Native structure. |
 
 ## Screenshots
 
@@ -81,13 +84,18 @@ This public version is sanitized for portfolio sharing. Personal regimen data ha
 ## Quick Start
 
 ```bash
+# Clone the repo
 git clone https://github.com/Naadir-Dev-Portfolio/Mobile-Health-Planner.git
 cd Mobile-Health-Planner
+
+# Install dependencies
 npm install
+
+# Run
 npx expo start
 ```
 
-Open the project in Expo Go. No API keys are required for the public demo.
+Open the project in Expo Go or an Expo-supported simulator. No API keys are required for the public demo.
 
 ## Tech Stack
 
@@ -98,11 +106,11 @@ Open the project in Expo Go. No API keys are required for the public demo.
 
 | Category | Tools |
 |---|---|
-| **Primary stack** | React Native, Expo, TypeScript |
-| **UI / App layer** | React Native views, `FlatList`, `react-native-webview` |
-| **Data / Storage** | Bundled local HTML files and static TypeScript asset manifest |
-| **Automation / Integration** | Expo Asset loading and deep-link handling |
-| **Platform** | Android and iOS through Expo |
+| **Primary stack** | `React Native` | `HTML` | `CSS` | `Javascript` |
+| **UI / App layer** | `Expo` | `React Native views` | `FlatList` | `react-native-webview` |
+| **Data / Storage** | Bundled local HTML files, static TypeScript asset manifest, static demo regimen data |
+| **Automation / Integration** | Expo Asset loading, WebView rendering, deep-link handling |
+| **Platform** | Android, iOS, and Expo development workflow |
 
 </details>
 
@@ -115,7 +123,7 @@ Open the project in Expo Go. No API keys are required for the public demo.
 
 ### Application model
 
-`App.tsx` controls three screens: home, workout library, and supplement plan. Workout metadata is loaded from `workouts.generated.ts`, local HTML files are resolved with Expo Asset, and selected routines render in a WebView.
+The app starts in `App.tsx`, which controls the home screen, workout library, and supplement-plan screen. Workout metadata is loaded from `workouts.generated.ts`, local HTML workout files are resolved through Expo Asset, and the selected routine is passed into a WebView for mobile rendering. Search state filters the routine list before selection, while route state controls which screen is active.
 
 ### Project structure
 
@@ -138,9 +146,9 @@ Mobile-Health-Planner/
 
 ### Data / system notes
 
+- Workout plans are static bundled HTML assets loaded locally through Expo.
 - Personal regimen and hair-care data has been removed from the public version.
-- No Expo cloud project ID, private build path, or generated private source folder is required.
-- The workout HTML files are static bundled assets for demo purposes.
+- No Expo cloud project ID, private build path, generated private source folder, or API key is required.
 
 </details>
 
@@ -148,4 +156,4 @@ Mobile-Health-Planner/
 
 Questions, feedback, or collaboration: `naadir.dev.mail@gmail.com`
 
-<sub>TypeScript, React Native, Expo, WebView</sub>
+<sub>React Native | HTML | CSS | Javascript</sub>
